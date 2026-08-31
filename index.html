@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Francis' Memory - Space Impact Deluxe</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=VT323&display=swap" rel="stylesheet">
     <style>
@@ -20,25 +20,41 @@
             -webkit-user-select: none;
         }
 
-        body {
-            background: var(--bg-gradient);
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #050508;
             color: #ffffff;
             font-family: 'Orbitron', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            max-width: 430px;
+            max-height: 932px;
+            background: var(--bg-gradient);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            min-height: 100vh;
-            margin: 0;
             padding: 10px 0 0 0;
-            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 20px var(--accent-glow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         h1 {
             color: var(--accent-color);
             letter-spacing: 4px;
             margin: 0 0 5px 0;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             text-transform: uppercase;
             text-shadow: 0 0 10px var(--accent-glow);
             transition: all 0.5s ease;
@@ -46,11 +62,12 @@
 
         #game-frame {
             background: #0f1015;
-            padding: 10px;
+            padding: 8px;
             border-radius: 16px;
             border: 2px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 20px var(--accent-glow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
             position: relative;
+            width: 94%;
         }
 
         .screen-wrapper {
@@ -58,6 +75,9 @@
             border-radius: 8px;
             overflow: hidden;
             border: 3px solid #000;
+            aspect-ratio: 16 / 10;
+            width: 100%;
+            background: #000;
         }
 
         .screen-wrapper::after {
@@ -74,17 +94,17 @@
         canvas {
             display: block;
             image-rendering: pixelated;
-            width: 92vw;
-            max-width: 420px;
-            height: auto;
-            aspect-ratio: 16 / 10;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
         }
 
         .overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(8, 9, 13, 0.85);
-            backdrop-filter: blur(2px);
+            background: rgba(8, 9, 13, 0.35);
+            backdrop-filter: blur(1px);
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -96,10 +116,10 @@
         }
 
         .story-card {
-            background: rgba(15, 16, 21, 0.95);
+            background: rgba(15, 16, 21, 0.45);
             border: 1px solid var(--accent-color);
             border-radius: 12px;
-            padding: 12px;
+            padding: 10px;
             box-shadow: 0 0 15px var(--accent-glow);
             max-width: 95%;
             width: 100%;
@@ -107,54 +127,40 @@
 
         .story-card h2 {
             margin: 0 0 6px 0;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             color: var(--accent-color);
             text-shadow: 0 0 8px var(--accent-glow);
         }
 
-        .story-card p {
-            font-size: 0.65rem;
-            line-height: 1.3;
-            margin: 0 0 10px 0;
-            color: #e2e8f0;
-            font-family: system-ui, sans-serif;
-        }
-
         .ship-selector {
             display: flex;
             justify-content: space-around;
-            gap: 6px;
+            gap: 4px;
             margin-bottom: 10px;
         }
 
         .ship-option {
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
-            padding: 6px;
+            padding: 6px 4px;
             cursor: pointer;
             width: 32%;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.4);
             transition: all 0.2s;
         }
 
         .ship-option.selected {
             border-color: var(--accent-color);
             box-shadow: 0 0 10px var(--accent-glow);
-            background: rgba(0, 255, 204, 0.1);
+            background: rgba(0, 255, 204, 0.2);
         }
 
         .ship-option h3 {
-            margin: 0 0 4px 0;
-            font-size: 0.6rem;
-            color: var(--accent-color);
-        }
-
-        .ship-option p {
             margin: 0;
-            font-size: 0.55rem;
-            color: #a0a7c2;
+            font-size: 0.65rem;
+            color: var(--accent-color);
         }
 
         .overlay button {
@@ -173,15 +179,14 @@
         .hidden { display: none !important; }
 
         #virtual-keyboard {
-            width: 100vw;
-            max-width: 420px;
-            height: 220px;
+            width: 100%;
+            height: 200px;
             background: #0f1015;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 10px;
+            padding: 8px;
             display: grid;
             grid-template-columns: 1.6fr 1.2fr;
-            gap: 10px;
+            gap: 8px;
             border-radius: 20px 20px 0 0;
             box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
         }
@@ -205,7 +210,7 @@
             color: #8a8f9d;
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 10px;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -228,12 +233,12 @@
         #btn-down { grid-column: 2; grid-row: 3; }
 
         .pause-btn {
-            height: 36px;
+            height: 32px;
             background: #1c1f2b;
             border: 1px solid #3a3f58;
             color: #a0a7c2;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 700;
             border-radius: 8px;
         }
@@ -244,7 +249,7 @@
             border: none;
             color: #ffffff;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 900;
             letter-spacing: 2px;
             border-radius: 12px;
@@ -260,48 +265,46 @@
 </head>
 <body>
 
-    <h1 id="game-title">Space Impact</h1>
+    <div id="game-container">
+        <h1 id="game-title">Space Impact</h1>
 
-    <div id="game-frame">
-        <div class="screen-wrapper">
-            <canvas id="canvas" width="160" height="100"></canvas>
+        <div id="game-frame">
+            <div class="screen-wrapper">
+                <canvas id="canvas" width="160" height="100"></canvas>
 
-            <div id="story-overlay" class="overlay">
-                <div class="story-card">
-                    <h2 id="story-title">SUPERNOVA SEPARATION</h2>
-                    <p id="story-text">Trapped in deep space! Select your vessel equipped with plasma shields to clear 8 sectors!</p>
-                    
-                    <div id="hangar-select" class="ship-selector">
-                        <div class="ship-option selected" onclick="selectShip('interceptor', event)">
-                            <h3>NOVA</h3>
-                            <p>Speed: 2.5<br>HP: 4 | Shld: 2</p>
+                <div id="story-overlay" class="overlay">
+                    <div class="story-card">
+                        <h2 id="story-title">SUPERNOVA SEPARATION</h2>
+                        
+                        <div id="hangar-select" class="ship-selector">
+                            <div class="ship-option selected" onclick="selectShip('interceptor', event)">
+                                <h3>NOVA</h3>
+                            </div>
+                            <div class="ship-option" onclick="selectShip('titan', event)">
+                                <h3>TITAN</h3>
+                            </div>
+                            <div class="ship-option" onclick="selectShip('wraith', event)">
+                                <h3>WRAITH</h3>
+                            </div>
                         </div>
-                        <div class="ship-option" onclick="selectShip('titan', event)">
-                            <h3>TITAN</h3>
-                            <p>Speed: 1.6<br>HP: 6 | Shld: 3</p>
-                        </div>
-                        <div class="ship-option" onclick="selectShip('wraith', event)">
-                            <h3>WRAITH</h3>
-                            <p>Speed: 2.0<br>HP: 3 | Shld: 4</p>
-                        </div>
+
+                        <button id="start-btn" onclick="dismissOverlay()">START MISSION</button>
                     </div>
-
-                    <button id="start-btn" onclick="dismissOverlay()">START MISSION</button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="virtual-keyboard">
-        <div class="dpad-container">
-            <button class="ctrl-btn" id="btn-up" data-key="ArrowUp">▲</button>
-            <button class="ctrl-btn" id="btn-left" data-key="ArrowLeft">◄</button>
-            <button class="ctrl-btn" id="btn-right" data-key="ArrowRight">►</button>
-            <button class="ctrl-btn" id="btn-down" data-key="ArrowDown">▼</button>
-        </div>
-        <div class="action-container">
-            <button class="ctrl-btn pause-btn" id="btn-pause" onclick="togglePause()">PAUSE</button>
-            <button class="ctrl-btn fire-btn" id="btn-fire" data-key="Fire">FIRE</button>
+        <div id="virtual-keyboard">
+            <div class="dpad-container">
+                <button class="ctrl-btn" id="btn-up" data-key="ArrowUp">▲</button>
+                <button class="ctrl-btn" id="btn-left" data-key="ArrowLeft">◄</button>
+                <button class="ctrl-btn" id="btn-right" data-key="ArrowRight">►</button>
+                <button class="ctrl-btn" id="btn-down" data-key="ArrowDown">▼</button>
+            </div>
+            <div class="action-container">
+                <button class="ctrl-btn pause-btn" id="btn-pause" onclick="togglePause()">PAUSE</button>
+                <button class="ctrl-btn fire-btn" id="btn-fire" data-key="Fire">FIRE</button>
+            </div>
         </div>
     </div>
 
@@ -310,7 +313,6 @@
         const ctx = canvas.getContext('2d');
         const storyOverlay = document.getElementById('story-overlay');
         const storyTitle = document.getElementById('story-title');
-        const storyText = document.getElementById('story-text');
         const startBtn = document.getElementById('start-btn');
         const gameTitle = document.getElementById('game-title');
         const hangarSelect = document.getElementById('hangar-select');
@@ -321,6 +323,8 @@
         let audioCtx = null;
         let bgMusicTimer = null;
         let highScore = parseInt(localStorage.getItem('space_impact_hi') || '0', 10);
+        let highScoreBroken = false;
+        let newHighScoreBannerTimer = 0;
 
         function initAudio() {
             if (!audioCtx) {
@@ -331,13 +335,11 @@
             }
         }
 
-        // Funky Retro Synth-Pop Sound Track Engine
         function startBackgroundMusic() {
             if (bgMusicTimer) return;
             let step = 0;
 
-            // F Minor Synth-Pop Scale Frequencies
-            const baseF = 174.61; // F3
+            const baseF = 174.61;
             const bassline = [baseF, baseF, baseF * 1.189, baseF, baseF * 1.335, baseF * 1.189, baseF * 1.5, baseF * 1.335];
             const leadMelody = [baseF * 2, 0, baseF * 2.378, baseF * 2.67, 0, baseF * 2.378, baseF * 2.996, baseF * 2.67];
 
@@ -345,7 +347,6 @@
                 if (!audioCtx || isPaused || gameState !== 'PLAYING') return;
                 const now = audioCtx.currentTime;
 
-                // 1. Slap Bass Synthesizer Node
                 const bassNote = bassline[step % bassline.length];
                 if (bassNote > 0) {
                     const bassOsc = audioCtx.createOscillator();
@@ -360,7 +361,6 @@
                     bassOsc.stop(now + 0.18);
                 }
 
-                // 2. Lead Synth Melody Line
                 const leadNote = leadMelody[step % leadMelody.length];
                 if (leadNote > 0) {
                     const leadOsc = audioCtx.createOscillator();
@@ -375,7 +375,6 @@
                     leadOsc.stop(now + 0.12);
                 }
 
-                // 3. Retro Snare/Noise Percussion
                 if (step % 2 === 1) {
                     const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.05, audioCtx.sampleRate);
                     const output = noiseBuffer.getChannelData(0);
@@ -393,50 +392,75 @@
                 }
 
                 step++;
-            }, 125); // Fast 120 BPM Groove
+            }, 125);
         }
 
         function playSound(type) {
             if (!audioCtx) return;
             const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
 
             if (type === 'shoot') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(550, now);
                 osc.frequency.exponentialRampToValueAtTime(90, now + 0.08);
                 gain.gain.setValueAtTime(0.08, now);
                 gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.08);
             } else if (type === 'destroy') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 osc.type = 'square';
-                osc.frequency.setValueAtTime(120, now);
-                osc.frequency.linearRampToValueAtTime(20, now + 0.15);
-                gain.gain.setValueAtTime(0.18, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(20, now + 0.22);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.22);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.22);
+
+                const noiseBuf = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.15, audioCtx.sampleRate);
+                const outData = noiseBuf.getChannelData(0);
+                for (let i = 0; i < noiseBuf.length; i++) outData[i] = Math.random() * 2 - 1;
+                const noise = audioCtx.createBufferSource();
+                const noiseG = audioCtx.createGain();
+                noise.buffer = noiseBuf;
+                noiseG.gain.setValueAtTime(0.12, now);
+                noiseG.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                noise.connect(noiseG); noiseG.connect(audioCtx.destination);
+                noise.start(now);
             } else if (type === 'powerup') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(300, now);
                 osc.frequency.exponentialRampToValueAtTime(900, now + 0.2);
                 gain.gain.setValueAtTime(0.12, now);
                 gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.2);
             } else if (type === 'shield_hit') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(800, now);
                 osc.frequency.linearRampToValueAtTime(300, now + 0.15);
                 gain.gain.setValueAtTime(0.15, now);
                 gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.15);
             } else if (type === 'hit') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(250, now);
                 osc.frequency.linearRampToValueAtTime(50, now + 0.3);
                 gain.gain.setValueAtTime(0.2, now);
                 gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.3);
             }
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 0.2);
         }
 
         const sectorThemes = [
@@ -451,9 +475,9 @@
         ];
 
         const shipTypes = {
-            interceptor: { speed: 2.5, maxLives: 4, maxShields: 2, invinTime: 80, name: 'NOVA', spriteKey: 'nova' },
-            titan: { speed: 1.6, maxLives: 6, maxShields: 3, invinTime: 90, name: 'TITAN', spriteKey: 'titan' },
-            wraith: { speed: 2.0, maxLives: 3, maxShields: 4, invinTime: 100, name: 'WRAITH', spriteKey: 'wraith' }
+            interceptor: { speed: 3.2, maxLives: 8, maxShields: 4, invinTime: 120, name: 'NOVA', spriteKey: 'nova' },
+            titan: { speed: 2.2, maxLives: 12, maxShields: 6, invinTime: 140, name: 'TITAN', spriteKey: 'titan' },
+            wraith: { speed: 2.8, maxLives: 6, maxShields: 8, invinTime: 150, name: 'WRAITH', spriteKey: 'wraith' }
         };
 
         let selectedShipType = 'interceptor';
@@ -503,14 +527,27 @@
             bullet: [[1,1],[1,1]]
         };
 
-        const cityPattern = [0,20,18,12,8,10,14,14,10,6,12,16,16,10,25,20,15,8,10,12];
+        const cityCluster = [
+            { w: 6, h: 14, windows: [[2, 4], [4, 10]] },
+            { w: 7, h: 22, windows: [[2, 6], [5, 14], [2, 18]] },
+            { w: 6, h: 36, windows: [[2, 8], [4, 16], [2, 24], [4, 30]] },
+            { w: 6, h: 28, windows: [[2, 10], [4, 20]] },
+            { w: 7, h: 20, windows: [[2, 6], [5, 12]] },
+            { w: 6, h: 12, windows: [[3, 6]] },
+            { w: 6, h: 16, windows: [[2, 8]] },
+            { w: 5, h: 24, windows: [[2, 10], [2, 18]] },
+            { w: 6, h: 18, windows: [[3, 8]] },
+            { w: 4, h: 0,  windows: [] }
+        ];
+
+        let totalCityWidth = cityCluster.reduce((sum, b) => sum + b.w, 0);
 
         let currentLevel = 1;
         let score = 0;
-        let lives = 4;
-        let maxLives = 4;
-        let shields = 2;
-        let maxShields = 2;
+        let lives = 8;
+        let maxLives = 8;
+        let shields = 4;
+        let maxShields = 4;
         const LEVEL_DURATION = 90;
         let levelTimeLeft = LEVEL_DURATION;
         let inBossFight = false;
@@ -525,12 +562,13 @@
         let invincibilityTimer = 0;
         let fireCooldown = 0;
         let boss = null;
-        let player = { x: 5, y: 40, speed: 2.5 };
+        let player = { x: 5, y: 40, speed: 3.2 };
         let playerBullets = [];
         let enemyBullets = [];
         let enemies = [];
         let items = [];
         let floatingTexts = [];
+        let explosions = [];
         let keys = {};
         let cityScrollX = 0;
         let waveTimer = 0;
@@ -585,6 +623,31 @@
             }
             updateTouchState();
         }, { passive: true });
+
+        function createExplosion(x, y, particleCount = 28, isLarge = false) {
+            const colors = ['#ff3300', '#ff9900', '#ffff00', '#ffffff', '#00ffcc'];
+            for (let i = 0; i < particleCount; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = (Math.random() * (isLarge ? 4.0 : 2.8)) + 0.8;
+                explosions.push({
+                    x: x, y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: Math.floor(Math.random() * 18) + 12,
+                    size: isLarge ? (Math.random() * 3 + 1.5) : (Math.random() * 2 + 1),
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+            }
+        }
+
+        function addScore(amount) {
+            score += amount;
+            if (highScore > 0 && score > highScore && !highScoreBroken) {
+                highScoreBroken = true;
+                newHighScoreBannerTimer = 90;
+                playSound('powerup');
+            }
+        }
 
         function selectShip(type, evt) {
             selectedShipType = type;
@@ -644,6 +707,7 @@
             } else if (gameState === 'GAME_OVER' || gameState === 'ENDING') {
                 currentLevel = 1;
                 score = 0;
+                highScoreBroken = false;
                 resetGame();
                 gameState = 'PLAYING';
                 storyOverlay.classList.add('hidden');
@@ -657,6 +721,7 @@
             lives = maxLives;
             maxShields = ship.maxShields;
             shields = maxShields;
+            highScoreBroken = false;
             hangarSelect.classList.add('hidden');
             resetLevel();
         }
@@ -670,6 +735,7 @@
             playerBullets = [];
             items = [];
             floatingTexts = [];
+            explosions = [];
             weaponTimer = 0;
             activeWeapon = 'standard';
             invincibilityTimer = 0;
@@ -716,49 +782,55 @@
             }
         }
 
-        function getBuildingHeightAt(x) {
-            const index = Math.floor(((x + cityScrollX) / 4)) % cityPattern.length;
-            return cityPattern[index] || 0;
+        function getBuildingHeightAt(worldX) {
+            let xNorm = (worldX + cityScrollX) % totalCityWidth;
+            if (xNorm < 0) xNorm += totalCityWidth;
+            let currentX = 0;
+            for (let b of cityCluster) {
+                if (xNorm >= currentX && xNorm < currentX + b.w) {
+                    return b.h;
+                }
+                currentX += b.w;
+            }
+            return 0;
         }
 
         function drawSkyline() {
             const theme = sectorThemes[currentLevel - 1];
-            cityScrollX = (cityScrollX + 0.15) % (cityPattern.length * 4);
-            
-            ctx.fillStyle = theme.pixel;
-            ctx.globalAlpha = 0.25;
-            for (let i = 0; i < LOGICAL_W + 20; i += 4) {
-                const index = Math.floor(((i + cityScrollX) / 4)) % cityPattern.length;
-                const h = cityPattern[index];
-                if (h > 0) {
-                    const bx = Math.floor(i - (cityScrollX % 4));
-                    const by = LOGICAL_H - h;
-                    for (let y = by; y < LOGICAL_H; y++) {
-                        for (let x = bx; x < bx + 4; x++) {
-                            if (x === bx || x === bx + 3 || y === by) {
-                                if (x >= 0 && x < LOGICAL_W) ctx.fillRect(x, y, 1, 1);
+            cityScrollX = (cityScrollX + 0.3) % totalCityWidth;
+
+            let curX = -cityScrollX;
+            while (curX < LOGICAL_W + 20) {
+                for (let b of cityCluster) {
+                    if (curX + b.w > 0 && curX < LOGICAL_W) {
+                        if (b.h > 0) {
+                            const by = LOGICAL_H - b.h;
+
+                            ctx.fillStyle = "#050e11";
+                            ctx.fillRect(curX, by, b.w, b.h);
+
+                            ctx.strokeStyle = theme.pixel;
+                            ctx.lineWidth = 1;
+                            ctx.strokeRect(curX + 0.5, by + 0.5, b.w - 1, b.h - 1);
+
+                            ctx.fillStyle = theme.pixel;
+                            ctx.globalAlpha = 0.25;
+                            for (let col = curX + 2; col < curX + b.w - 1; col += 2) {
+                                ctx.fillRect(col, by + 1, 1, b.h - 2);
+                            }
+                            ctx.globalAlpha = 1.0;
+
+                            ctx.fillStyle = "#ffeb99";
+                            if (b.windows) {
+                                for (let w of b.windows) {
+                                    ctx.fillRect(curX + w[0], by + w[1], 1, 1);
+                                }
                             }
                         }
                     }
+                    curX += b.w;
                 }
             }
-
-            ctx.globalAlpha = 0.8;
-            ctx.fillStyle = "#ffffaa";
-            for (let i = 0; i < LOGICAL_W + 20; i += 4) {
-                const index = Math.floor(((i + cityScrollX) / 4)) % cityPattern.length;
-                const h = cityPattern[index];
-                if (h > 12) {
-                    const bx = Math.floor(i - (cityScrollX % 4));
-                    const by = LOGICAL_H - h;
-                    if (bx >= 0 && bx < LOGICAL_W) {
-                        ctx.fillRect(bx + 1, by + 4, 1, 1);
-                        ctx.fillRect(bx + 2, by + 8, 1, 1);
-                        if (h > 18) ctx.fillRect(bx + 1, by + 12, 1, 1);
-                    }
-                }
-            }
-            ctx.globalAlpha = 1.0;
         }
 
         function drawHUD() {
@@ -837,18 +909,18 @@
             if (score >= currentTarget) { spawnBoss(); return; }
 
             waveTimer++;
-            if (waveTimer % 40 === 0) {
+            if (waveTimer % 25 === 0) {
                 const formationType = Math.random();
                 let type = (currentLevel > 3) ? 'jellyfish' : 'alien';
 
                 if (formationType < 0.3) {
                     for (let i = 0; i < 3; i++) {
-                        enemies.push({ type: type, x: LOGICAL_W + (i * 10), y: 30 + (i * 12), speed: 1.2, hp: 2 });
+                        enemies.push({ type: type, x: LOGICAL_W + (i * 10), y: 30 + (i * 12), speed: 2.0, hp: 2 });
                     }
                 } else if (formationType < 0.6) {
-                    enemies.push({ type: 'plasmaBat', x: LOGICAL_W, y: 40, speed: 1.5, hp: 3, sine: true, baseY: 40 });
+                    enemies.push({ type: 'plasmaBat', x: LOGICAL_W, y: 40, speed: 2.2, hp: 3, sine: true, baseY: 40 });
                 } else {
-                    enemies.push({ type: type, x: LOGICAL_W, y: Math.floor(Math.random() * 50) + 15, speed: 1.3, hp: 2 });
+                    enemies.push({ type: type, x: LOGICAL_W, y: Math.floor(Math.random() * 50) + 15, speed: 2.0, hp: 2 });
                 }
             }
         }
@@ -857,6 +929,7 @@
             if (gameState !== 'PLAYING' || isPaused) return;
 
             if (levelBannerTimer > 0) levelBannerTimer--;
+            if (newHighScoreBannerTimer > 0) newHighScoreBannerTimer--;
             if (weaponTimer > 0) {
                 weaponTimer--;
                 if (weaponTimer === 0) activeWeapon = 'standard';
@@ -911,6 +984,13 @@
                 if (ft.life <= 0) floatingTexts.splice(i, 1);
             });
 
+            explosions.forEach((p, pi) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                if (p.life <= 0) explosions.splice(pi, 1);
+            });
+
             spawnBoosterItems();
             items.forEach((it, idx) => {
                 it.x -= it.speed;
@@ -942,9 +1022,11 @@
                     if (pb.x >= boss.x && pb.x <= boss.x + 12 && pb.y >= boss.y && pb.y <= boss.y + 9) {
                         if (!pb.pierce) playerBullets.splice(pbi, 1);
                         boss.hp -= 1;
-                        score += 5;
+                        addScore(5);
+                        createExplosion(pb.x, pb.y, 6);
                         if (boss.hp <= 0) {
                             addFloatingPoints(200, boss.x, boss.y);
+                            createExplosion(boss.x + 6, boss.y + 4, 48, true);
                             playSound('destroy');
                             boss = null;
                             inBossFight = false;
@@ -969,8 +1051,9 @@
                         e.hp -= 1;
                         if (e.hp <= 0) {
                             const pts = 15;
-                            score += pts;
+                            addScore(pts);
                             addFloatingPoints(pts, e.x, e.y);
+                            createExplosion(e.x + 3, e.y + 3, 28);
                             playSound('destroy');
                             enemies.splice(ei, 1);
                         }
@@ -978,6 +1061,7 @@
                 });
 
                 if (player.x + pw >= e.x && player.x <= e.x + 6 && player.y + ph >= e.y && player.y <= e.y + 6) {
+                    createExplosion(e.x + 3, e.y + 3, 28);
                     enemies.splice(ei, 1);
                     handlePlayerHit();
                 }
@@ -995,14 +1079,12 @@
             if (currentLevel < 8) {
                 gameState = 'LEVEL_CLEAR';
                 storyTitle.textContent = `SECTOR ${currentLevel} CLEARED!`;
-                storyText.textContent = `Sector boss eliminated safely. Next up: ${sectorThemes[currentLevel].name}`;
                 startBtn.textContent = "NEXT SECTOR";
                 currentLevel++;
                 storyOverlay.classList.remove('hidden');
             } else {
                 gameState = 'ENDING';
                 storyTitle.textContent = "CORE OVERLORD DESTROYED!";
-                storyText.textContent = `All 8 sectors cleared! High Score: ${highScore}. Safe passage restored!`;
                 startBtn.textContent = "PLAY AGAIN";
                 hangarSelect.classList.remove('hidden');
                 storyOverlay.classList.remove('hidden');
@@ -1011,6 +1093,8 @@
 
         function handlePlayerHit() {
             if (invincibilityTimer > 0) return;
+
+            createExplosion(player.x + 6, player.y + 4, 12);
 
             if (shields > 0) {
                 shields--;
@@ -1030,7 +1114,6 @@
                 }
                 gameState = 'GAME_OVER';
                 storyTitle.textContent = "MISSION FAILED";
-                storyText.textContent = `Defeated in Sector ${currentLevel}. Score: ${score} | High: ${highScore}`;
                 startBtn.textContent = "TRY AGAIN";
                 hangarSelect.classList.remove('hidden');
                 storyOverlay.classList.remove('hidden');
@@ -1083,9 +1166,18 @@
                 drawPixelGrid(sprites.boss, boss.x, boss.y, 1, theme.enemy);
             }
 
+            explosions.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.fillRect(Math.floor(p.x), Math.floor(p.y), Math.floor(p.size), Math.floor(p.size));
+            });
+
             floatingTexts.forEach(ft => drawText(ft.text, ft.x, ft.y));
 
-            if (levelBannerTimer > 0) {
+            if (newHighScoreBannerTimer > 0) {
+                ctx.fillStyle = "rgba(0,255,204,0.8)";
+                ctx.fillRect(0, 38, LOGICAL_W, 22);
+                drawText("NEW HIGH SCORE", 35, 46, "#000000");
+            } else if (levelBannerTimer > 0) {
                 ctx.fillStyle = "rgba(0,0,0,0.6)";
                 ctx.fillRect(0, 40, LOGICAL_W, 20);
                 drawText(`SECTOR ${currentLevel}`, 55, 47, theme.pixel);
