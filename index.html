@@ -277,7 +277,7 @@
                 <div id="story-overlay" class="overlay">
                     <div class="story-card">
                         <h2 id="story-title">SUPERNOVA SEPARATION</h2>
-                        
+
                         <div id="hangar-select" class="ship-selector">
                             <div class="ship-option selected" onclick="selectShip('interceptor', event)">
                                 <h3>NOVA</h3>
@@ -473,7 +473,8 @@
             { name: "5. THE DARK SECTOR", bg: "#080e18", pixel: "#7000ff", enemy: "#00f5d4", targetScore: 2200 },
             { name: "6. MOTHERSHIP PERIMETER", bg: "#0b2b1a", pixel: "#39ff14", enemy: "#ff0055", targetScore: 2900 },
             { name: "7. QUANTUM VOID", bg: "#1f002b", pixel: "#ff00ea", enemy: "#00ffff", targetScore: 3700 },
-            { name: "8. CORE OVERLORD", bg: "#100000", pixel: "#ff0000", enemy: "#ffff00", targetScore: 4600 }
+            { name: "8. CORE OVERLORD", bg: "#100000", pixel: "#ff0000", enemy: "#ffff00", targetScore: 4600 },
+            { name: "9. NEON CYBERGRID", bg: "#030212", pixel: "#ff0055", enemy: "#00e5ff", targetScore: 5600 }
         ];
 
         const shipTypes = {
@@ -918,17 +919,18 @@
 
             waveTimer++;
             if (waveTimer % 25 === 0) {
+                const availableEnemyTypes = ['alien', 'jellyfish', 'plasmaBat'];
+                const selectedType = availableEnemyTypes[Math.floor(Math.random() * availableEnemyTypes.length)];
                 const formationType = Math.random();
-                let type = (currentLevel > 3) ? 'jellyfish' : 'alien';
 
-                if (formationType < 0.3) {
-                    for (let i = 0; i < 3; i++) {
-                        enemies.push({ type: type, x: LOGICAL_W + (i * 10), y: 30 + (i * 12), speed: 1.0, hp: 2 });
-                    }
-                } else if (formationType < 0.6) {
+                if (selectedType === 'plasmaBat') {
                     enemies.push({ type: 'plasmaBat', x: LOGICAL_W, y: 40, speed: 1.2, hp: 3, sine: true, baseY: 40 });
+                } else if (formationType < 0.5) {
+                    for (let i = 0; i < 3; i++) {
+                        enemies.push({ type: selectedType, x: LOGICAL_W + (i * 10), y: 30 + (i * 12), speed: 1.0, hp: 2 });
+                    }
                 } else {
-                    enemies.push({ type: type, x: LOGICAL_W, y: Math.floor(Math.random() * 50) + 15, speed: 1.0, hp: 2 });
+                    enemies.push({ type: selectedType, x: LOGICAL_W, y: Math.floor(Math.random() * 50) + 15, speed: 1.0, hp: 2 });
                 }
             }
         }
@@ -1092,14 +1094,14 @@
                 localStorage.setItem('space_impact_hi', highScore);
             }
 
-            if (currentLevel < 8) {
+            if (currentLevel < sectorThemes.length) {
                 gameState = 'LEVEL_CLEAR';
                 storyTitle.textContent = `SECTOR ${currentLevel} CLEARED!`;
                 startBtn.textContent = "NEXT SECTOR";
                 storyOverlay.classList.remove('hidden');
             } else {
                 gameState = 'ENDING';
-                storyTitle.textContent = "CORE OVERLORD DESTROYED!";
+                storyTitle.textContent = "NEON OVERLORD DESTROYED!";
                 startBtn.textContent = "PLAY AGAIN";
                 hangarSelect.classList.remove('hidden');
                 storyOverlay.classList.remove('hidden');
@@ -1151,7 +1153,7 @@
 
             if (invincibilityTimer === 0 || Math.floor(invincibilityTimer / 4) % 2 === 0) {
                 drawPixelGrid(playerSprite, player.x, player.y);
-                
+
                 if (shields > 0) {
                     ctx.strokeStyle = '#00bfff';
                     ctx.lineWidth = 1;
