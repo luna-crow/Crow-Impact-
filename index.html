@@ -331,26 +331,69 @@
             }
         }
 
+        // Funky Retro Synth-Pop Sound Track Engine
         function startBackgroundMusic() {
             if (bgMusicTimer) return;
             let step = 0;
+
+            // F Minor Synth-Pop Scale Frequencies
+            const baseF = 174.61; // F3
+            const bassline = [baseF, baseF, baseF * 1.189, baseF, baseF * 1.335, baseF * 1.189, baseF * 1.5, baseF * 1.335];
+            const leadMelody = [baseF * 2, 0, baseF * 2.378, baseF * 2.67, 0, baseF * 2.378, baseF * 2.996, baseF * 2.67];
+
             bgMusicTimer = setInterval(() => {
                 if (!audioCtx || isPaused || gameState !== 'PLAYING') return;
                 const now = audioCtx.currentTime;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                const baseFreq = (currentLevel % 2 === 0) ? 164.81 : 220;
-                const notes = [baseFreq, baseFreq * 1.18, baseFreq * 1.5, baseFreq * 1.78];
-                osc.type = (currentLevel % 2 === 0) ? 'sine' : 'triangle';
-                osc.frequency.setValueAtTime(notes[step % notes.length], now);
-                gain.gain.setValueAtTime(0.02, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 0.4);
+
+                // 1. Slap Bass Synthesizer Node
+                const bassNote = bassline[step % bassline.length];
+                if (bassNote > 0) {
+                    const bassOsc = audioCtx.createOscillator();
+                    const bassGain = audioCtx.createGain();
+                    bassOsc.type = 'sawtooth';
+                    bassOsc.frequency.setValueAtTime(bassNote / 2, now);
+                    bassGain.gain.setValueAtTime(0.04, now);
+                    bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                    bassOsc.connect(bassGain);
+                    bassGain.connect(audioCtx.destination);
+                    bassOsc.start(now);
+                    bassOsc.stop(now + 0.18);
+                }
+
+                // 2. Lead Synth Melody Line
+                const leadNote = leadMelody[step % leadMelody.length];
+                if (leadNote > 0) {
+                    const leadOsc = audioCtx.createOscillator();
+                    const leadGain = audioCtx.createGain();
+                    leadOsc.type = 'square';
+                    leadOsc.frequency.setValueAtTime(leadNote, now);
+                    leadGain.gain.setValueAtTime(0.02, now);
+                    leadGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+                    leadOsc.connect(leadGain);
+                    leadGain.connect(audioCtx.destination);
+                    leadOsc.start(now);
+                    leadOsc.stop(now + 0.12);
+                }
+
+                // 3. Retro Snare/Noise Percussion
+                if (step % 2 === 1) {
+                    const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.05, audioCtx.sampleRate);
+                    const output = noiseBuffer.getChannelData(0);
+                    for (let i = 0; i < noiseBuffer.length; i++) {
+                        output[i] = Math.random() * 2 - 1;
+                    }
+                    const whiteNoise = audioCtx.createBufferSource();
+                    const noiseGain = audioCtx.createGain();
+                    whiteNoise.buffer = noiseBuffer;
+                    noiseGain.gain.setValueAtTime(0.025, now);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    whiteNoise.connect(noiseGain);
+                    noiseGain.connect(audioCtx.destination);
+                    whiteNoise.start(now);
+                }
+
                 step++;
-            }, 400);
+            }, 125); // Fast 120 BPM Groove
         }
 
         function playSound(type) {
@@ -430,41 +473,20 @@
         };
 
         const sprites = {
-            // Nova Interceptor - Sleek Arrowhead
             nova: [
-                [0,0,1,0,1,0,0,0,0,0,0,0],
-                [0,1,0,0,0,1,0,0,0,0,0,0],
-                [1,0,0,1,1,0,0,0,0,0,0,0],
-                [1,0,1,1,1,1,1,1,1,0,0,0],
-                [0,1,1,0,1,1,1,1,1,1,1,0],
-                [1,0,1,1,1,1,1,1,1,0,0,0],
-                [1,0,0,1,1,0,0,0,0,0,0,0],
-                [0,1,0,0,0,1,0,0,0,0,0,0],
-                [0,0,1,0,1,0,0,0,0,0,0,0]
+                [0,0,1,0,1,0,0,0,0,0,0,0], [0,1,0,0,0,1,0,0,0,0,0,0], [1,0,0,1,1,0,0,0,0,0,0,0],
+                [1,0,1,1,1,1,1,1,1,0,0,0], [0,1,1,0,1,1,1,1,1,1,1,0], [1,0,1,1,1,1,1,1,1,0,0,0],
+                [1,0,0,1,1,0,0,0,0,0,0,0], [0,1,0,0,0,1,0,0,0,0,0,0], [0,0,1,0,1,0,0,0,0,0,0,0]
             ],
-            // Titan Cruiser - Heavy Blocky Dreadnought
             titan: [
-                [1,1,1,1,0,0,0,0,0,0,0,0],
-                [1,1,1,1,1,1,1,0,0,0,0,0],
-                [1,1,1,1,1,1,1,1,1,0,0,0],
-                [1,1,0,1,1,1,1,1,1,1,1,1],
-                [1,1,1,1,1,1,1,1,1,1,1,0],
-                [1,1,0,1,1,1,1,1,1,1,1,1],
-                [1,1,1,1,1,1,1,1,1,0,0,0],
-                [1,1,1,1,1,1,1,0,0,0,0,0],
-                [1,1,1,1,0,0,0,0,0,0,0,0]
+                [1,1,1,1,0,0,0,0,0,0,0,0], [1,1,1,1,1,1,1,0,0,0,0,0], [1,1,1,1,1,1,1,1,1,0,0,0],
+                [1,1,0,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1,1,0], [1,1,0,1,1,1,1,1,1,1,1,1],
+                [1,1,1,1,1,1,1,1,1,0,0,0], [1,1,1,1,1,1,1,0,0,0,0,0], [1,1,1,1,0,0,0,0,0,0,0,0]
             ],
-            // Ghost Wraith - Split-Wing Stealth Fighter
             wraith: [
-                [1,1,0,0,0,0,0,0,0,0,0,0],
-                [0,1,1,1,0,0,0,0,0,0,0,0],
-                [0,0,1,1,1,1,0,0,0,0,0,0],
-                [1,1,1,0,1,1,1,1,1,1,1,0],
-                [0,0,0,1,1,1,1,1,0,0,0,0],
-                [1,1,1,0,1,1,1,1,1,1,1,0],
-                [0,0,1,1,1,1,0,0,0,0,0,0],
-                [0,1,1,1,0,0,0,0,0,0,0,0],
-                [1,1,0,0,0,0,0,0,0,0,0,0]
+                [1,1,0,0,0,0,0,0,0,0,0,0], [0,1,1,1,0,0,0,0,0,0,0,0], [0,0,1,1,1,1,0,0,0,0,0,0],
+                [1,1,1,0,1,1,1,1,1,1,1,0], [0,0,0,1,1,1,1,1,0,0,0,0], [1,1,1,0,1,1,1,1,1,1,1,0],
+                [0,0,1,1,1,1,0,0,0,0,0,0], [0,1,1,1,0,0,0,0,0,0,0,0], [1,1,0,0,0,0,0,0,0,0,0,0]
             ],
             alien: [[0,1,1,1,1,0],[1,1,1,1,1,1],[1,0,1,1,0,1],[1,1,1,1,1,1],[0,1,0,0,1,0],[1,0,1,0,1,0]],
             astronaut: [[0,1,1,1,1,0],[1,1,0,0,1,1],[0,1,1,1,1,0],[1,1,1,1,1,1],[1,0,1,1,0,1],[0,1,0,0,1,0]],
@@ -703,7 +725,6 @@
             const theme = sectorThemes[currentLevel - 1];
             cityScrollX = (cityScrollX + 0.15) % (cityPattern.length * 4);
             
-            // Draw Main Building Silhouette
             ctx.fillStyle = theme.pixel;
             ctx.globalAlpha = 0.25;
             for (let i = 0; i < LOGICAL_W + 20; i += 4) {
@@ -722,7 +743,6 @@
                 }
             }
 
-            // Draw Tiny Glowing Windows inside Buildings
             ctx.globalAlpha = 0.8;
             ctx.fillStyle = "#ffffaa";
             for (let i = 0; i < LOGICAL_W + 20; i += 4) {
@@ -731,7 +751,6 @@
                 if (h > 12) {
                     const bx = Math.floor(i - (cityScrollX % 4));
                     const by = LOGICAL_H - h;
-                    // Add small window lights along building faces
                     if (bx >= 0 && bx < LOGICAL_W) {
                         ctx.fillRect(bx + 1, by + 4, 1, 1);
                         ctx.fillRect(bx + 2, by + 8, 1, 1);
@@ -993,7 +1012,6 @@
         function handlePlayerHit() {
             if (invincibilityTimer > 0) return;
 
-            // Shields absorb hit without resetting ship location
             if (shields > 0) {
                 shields--;
                 invincibilityTimer = shipTypes[selectedShipType].invinTime;
@@ -1001,7 +1019,6 @@
                 return;
             }
 
-            // Lose a life only when shields are depleted
             lives--;
             invincibilityTimer = shipTypes[selectedShipType].invinTime;
             playSound('hit');
