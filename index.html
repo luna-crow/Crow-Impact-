@@ -116,7 +116,7 @@
         }
 
         .overlay h2 {
-            margin: 0 0 10px 45px;
+            margin: 0 0 10px 0;
             font-size: 0.75rem;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -143,7 +143,6 @@
             color: #000;
             border: none;
             padding: 5px 12px;
-            margin-left: 45px;
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
             font-size: 0.55rem;
@@ -506,14 +505,48 @@
             cyberScout: [[1,1,0,0,1,1],[0,1,1,1,1,0],[1,1,0,0,1,1],[0,1,1,1,1,0],[1,0,0,0,0,1],[0,1,0,0,1,0]],
             voidWalker: [[0,1,0,1,0],[1,1,1,1,1],[0,1,1,1,0],[1,0,1,0,1],[1,1,0,1,1],[0,1,0,1,0]],
             boss: [
-                [0,1,1,1,1,1,1,1,1,1,1,0], [1,1,1,0,0,0,0,0,0,1,1,1], [1,1,0,1,1,1,1,1,1,0,1,1],
-                [1,1,1,1,1,1,1,1,1,1,1,1], [1,0,1,0,1,1,1,1,0,1,0,1], [1,1,1,1,1,1,1,1,1,1,1,1],
-                [1,1,0,1,1,1,1,1,1,0,1,1], [1,1,1,0,0,0,0,0,0,1,1,1], [0,1,1,1,1,1,1,1,1,1,1,0]
+                [0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0,0,0,0,0,0],
+                [0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,0,0,0,0],
+                [0,0,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,0,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [1,1,1,0,0,1,1,1,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,1,1],
+                [1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1],
+                [1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1],
+                [1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1],
+                [1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1],
+                [1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1],
+                [1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1],
+                [1,1,1,0,0,1,1,1,1,1,1,0,0,0,1,1,1,1,0,0,0,1,1,1,1,1,1,0,0,1,1,1],
+                [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,0,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,0,0],
+                [0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,0,0,0,0],
+                [0,0,0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0]
             ],
             bossType2: [
-                [1,1,1,0,0,0,0,0,0,1,1,1], [0,1,1,1,1,1,1,1,1,1,1,0], [1,1,0,1,0,1,1,0,1,0,1,1],
-                [1,1,1,1,1,1,1,1,1,1,1,1], [0,0,1,1,1,1,1,1,1,1,0,0], [1,1,1,1,1,1,1,1,1,1,1,1],
-                [1,0,1,1,0,0,0,0,1,1,0,1], [0,1,0,1,1,1,1,1,1,0,1,0], [1,0,0,0,1,1,1,1,0,0,0,1]
+                [1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1],
+                [1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1],
+                [0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,0],
+                [0,0,1,1,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,1,1,0,0],
+                [0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,0,0],
+                [0,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,0],
+                [1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,1],
+                [1,1,0,0,1,1,1,1,0,0,1,0,0,1,1,1,1,1,1,0,0,1,0,0,1,1,1,1,0,0,1,1],
+                [1,1,0,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1],
+                [1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1],
+                [1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1],
+                [1,1,0,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,1,1,1,0,0,0,0,1,1],
+                [1,1,0,0,1,1,1,1,0,0,1,0,0,1,1,1,1,1,1,0,0,1,0,0,1,1,1,1,0,0,1,1],
+                [1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,0,0,1,1,0,0,1,1,1,1,1,1,1],
+                [0,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,0],
+                [0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,0,0],
+                [0,0,1,1,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,0,0,1,1,0,0],
+                [0,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,0],
+                [1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1],
+                [1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1]
             ],
             heart: [[0,1,0,1,0],[1,1,1,1,1],[1,1,1,1,1],[0,1,1,1,0],[0,0,1,0,0]],
             shield: [[0,1,1,1,0],[1,0,0,0,1],[1,0,1,0,1],[1,0,0,0,1],[0,1,1,1,0]],
@@ -752,9 +785,17 @@
             if (inBossFight) return;
             inBossFight = true;
             enemyBullets = [];
-            const bossHp = 30 + (currentLevel * 12);
+            
+            // Power up player upon entering boss phase
+            lives = maxLives;
+            shields = maxShields;
+            activeWeapon = 'beam';
+            weaponTimer = 99999;
+            playSound('powerup');
+
+            const bossHp = 45 + (currentLevel * 18);
             const spriteKey = (currentLevel % 2 === 0) ? 'bossType2' : 'boss';
-            boss = { x: LOGICAL_W - 25, y: 35, hp: bossHp, maxHp: bossHp, dir: 1, spriteKey: spriteKey };
+            boss = { x: LOGICAL_W - 36, y: 20, hp: bossHp, maxHp: bossHp, dir: 1, spriteKey: spriteKey };
         }
 
         function addFloatingPoints(val, x, y) {
@@ -939,8 +980,9 @@
         }
 
         function spawnBoosterItems() {
+            if (inBossFight) return;
             if (Math.random() < 0.01) {
-                const types = ['heart', 'shield', 'spread', 'beam', 'homing'];
+                const types = ['heart', 'shield', 'spread', 'homing'];
                 items.push({
                     type: types[Math.floor(Math.random() * types.length)],
                     x: LOGICAL_W, y: Math.floor(Math.random() * 50) + 15, speed: 0.8
@@ -979,14 +1021,14 @@
             if (newHighScoreBannerTimer > 0) newHighScoreBannerTimer--;
             if (weaponTimer > 0) {
                 weaponTimer--;
-                if (weaponTimer === 0) activeWeapon = 'standard';
+                if (weaponTimer === 0 && !inBossFight) activeWeapon = 'standard';
             }
             if (invincibilityTimer > 0) invincibilityTimer--;
 
             if (keys['Fire'] || keys[' '] || keys['Spacebar']) {
                 if (fireCooldown <= 0) {
                     firePlayerBullet();
-                    fireCooldown = activeWeapon === 'beam' ? 4 : 7;
+                    fireCooldown = activeWeapon === 'beam' ? 3 : 7;
                 }
             }
             if (fireCooldown > 0) fireCooldown--;
@@ -1004,7 +1046,8 @@
                 player.y = Math.max(10, buildingTopY - ph - 2);
             }
 
-            playerBullets.forEach((b, i) => {
+            for (let i = playerBullets.length - 1; i >= 0; i--) {
+                let b = playerBullets[i];
                 b.x += 4.5;
                 b.y += (b.dy || 0);
 
@@ -1014,40 +1057,50 @@
                     else if (target.y < b.y) b.y -= 0.8;
                 }
 
-                enemyBullets.forEach((eb, ebi) => {
+                for (let ebi = enemyBullets.length - 1; ebi >= 0; ebi--) {
+                    let eb = enemyBullets[ebi];
                     if (Math.abs(b.x - eb.x) < 3 && Math.abs(b.y - eb.y) < 3) {
                         createExplosion((b.x + eb.x) / 2, (b.y + eb.y) / 2, 4);
                         if (!b.pierce) playerBullets.splice(i, 1);
                         enemyBullets.splice(ebi, 1);
+                        break;
                     }
-                });
+                }
 
-                if (b.x > LOGICAL_W || b.y < 10 || b.y > LOGICAL_H) playerBullets.splice(i, 1);
-            });
+                if (b && (b.x > LOGICAL_W || b.y < 10 || b.y > LOGICAL_H)) {
+                    playerBullets.splice(i, 1);
+                }
+            }
 
-            enemyBullets.forEach((eb, i) => {
+            for (let i = enemyBullets.length - 1; i >= 0; i--) {
+                let eb = enemyBullets[i];
                 eb.x -= (1.5 + (currentLevel * 0.15));
                 if (eb.x >= player.x && eb.x <= player.x + pw && eb.y >= player.y && eb.y <= player.y + ph) {
                     enemyBullets.splice(i, 1);
                     handlePlayerHit();
+                } else if (eb.x < 0) {
+                    enemyBullets.splice(i, 1);
                 }
-                if (eb.x < 0) enemyBullets.splice(i, 1);
-            });
+            }
 
-            floatingTexts.forEach((ft, i) => {
-                ft.y -= 0.4; ft.life--;
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                let ft = floatingTexts[i];
+                ft.y -= 0.4; 
+                ft.life--;
                 if (ft.life <= 0) floatingTexts.splice(i, 1);
-            });
+            }
 
-            explosions.forEach((p, pi) => {
+            for (let pi = explosions.length - 1; pi >= 0; pi--) {
+                let p = explosions[pi];
                 p.x += p.vx;
                 p.y += p.vy;
                 p.life--;
                 if (p.life <= 0) explosions.splice(pi, 1);
-            });
+            }
 
             spawnBoosterItems();
-            items.forEach((it, idx) => {
+            for (let idx = items.length - 1; idx >= 0; idx--) {
+                let it = items[idx];
                 it.x -= it.speed;
                 if (it.x >= player.x && it.x <= player.x + pw && it.y >= player.y && it.y <= player.y + ph) {
                     if (it.type === 'heart' && lives < maxLives) {
@@ -1061,39 +1114,44 @@
                     }
                     items.splice(idx, 1);
                 }
-            });
+            }
             items = items.filter(it => it.x > -10);
 
             if (inBossFight && boss) {
-                boss.y += boss.dir * (1.0 + (currentLevel * 0.1));
-                if (boss.y < 12 || boss.y > 60) boss.dir *= -1;
+                boss.y += boss.dir * (0.6 + (currentLevel * 0.05));
+                if (boss.y < 12 || boss.y > 68) boss.dir *= -1;
 
-                if (Math.random() < 0.08 + (currentLevel * 0.01)) {
-                    enemyBullets.push({ x: boss.x - 2, y: boss.y + 2 });
-                    enemyBullets.push({ x: boss.x - 2, y: boss.y + 7 });
+                if (Math.random() < 0.10 + (currentLevel * 0.015)) {
+                    enemyBullets.push({ x: boss.x - 2, y: boss.y + 4 });
+                    enemyBullets.push({ x: boss.x - 2, y: boss.y + 10 });
+                    enemyBullets.push({ x: boss.x - 2, y: boss.y + 16 });
                 }
 
-                playerBullets.forEach((pb, pbi) => {
-                    if (pb.x >= boss.x && pb.x <= boss.x + 12 && pb.y >= boss.y && pb.y <= boss.y + 9) {
+                for (let pbi = playerBullets.length - 1; pbi >= 0; pbi--) {
+                    if (!boss) break;
+                    let pb = playerBullets[pbi];
+                    if (pb.x >= boss.x && pb.x <= boss.x + 32 && pb.y >= boss.y && pb.y <= boss.y + 20) {
                         if (!pb.pierce) playerBullets.splice(pbi, 1);
                         boss.hp -= 1;
                         addScore(5);
                         createExplosion(pb.x, pb.y, 6);
                         if (boss.hp <= 0) {
                             addFloatingPoints(200, boss.x, boss.y);
-                            createExplosion(boss.x + 6, boss.y + 4, 48, true);
+                            createExplosion(boss.x + 16, boss.y + 10, 64, true);
                             playSound('destroy');
                             vibrate(100);
                             boss = null;
                             inBossFight = false;
                             completeLevel();
+                            break;
                         }
                     }
-                });
+                }
             }
 
             spawnEnemies();
-            enemies.forEach((e, ei) => {
+            for (let ei = enemies.length - 1; ei >= 0; ei--) {
+                let e = enemies[ei];
                 e.x -= e.speed;
                 if (e.sine) e.y = e.baseY + Math.sin(e.x * 0.1) * 15;
 
@@ -1101,7 +1159,8 @@
                     enemyBullets.push({ x: e.x - 2, y: e.y + 2 });
                 }
 
-                playerBullets.forEach((pb, pbi) => {
+                for (let pbi = playerBullets.length - 1; pbi >= 0; pbi--) {
+                    let pb = playerBullets[pbi];
                     if (pb.x >= e.x && pb.x <= e.x + 6 && pb.y >= e.y && pb.y <= e.y + 6) {
                         if (!pb.pierce) playerBullets.splice(pbi, 1);
                         e.hp -= 1;
@@ -1114,15 +1173,16 @@
                             vibrate(40);
                             enemies.splice(ei, 1);
                         }
+                        break;
                     }
-                });
+                }
 
                 if (player.x + pw >= e.x && player.x <= e.x + 6 && player.y + ph >= e.y && player.y <= e.y + 6) {
                     createExplosion(e.x + 3, e.y + 3, 28);
                     enemies.splice(ei, 1);
                     handlePlayerHit();
                 }
-            });
+            }
 
             enemies = enemies.filter(e => e.x > -10);
         }
@@ -1203,7 +1263,14 @@
                 drawPixelGrid(sprite, it.x, it.y, 1, color);
             });
 
-            playerBullets.forEach(b => drawPixelGrid(sprites.bullet, b.x, b.y, 1));
+            playerBullets.forEach(b => {
+                if (b.type === 'beam') {
+                    ctx.fillStyle = '#00ffff';
+                    ctx.fillRect(b.x, b.y - 1, 16, 3);
+                } else {
+                    drawPixelGrid(sprites.bullet, b.x, b.y, 1);
+                }
+            });
             enemyBullets.forEach(eb => drawPixelGrid(sprites.bullet, eb.x, eb.y, 1, theme.enemy));
 
             enemies.forEach(e => {
