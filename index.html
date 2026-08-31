@@ -701,11 +701,17 @@
 
         function dismissOverlay() {
             initAudio();
-            if (gameState === 'INTRO' || gameState === 'LEVEL_CLEAR') {
+            if (gameState === 'INTRO') {
                 gameState = 'PLAYING';
                 storyOverlay.classList.add('hidden');
-                if (gameState === 'INTRO') resetGame();
-                else resetLevel();
+                resetGame();
+            } else if (gameState === 'LEVEL_CLEAR') {
+                gameState = 'PLAYING';
+                storyOverlay.classList.add('hidden');
+                if (currentLevel < sectorThemes.length) {
+                    currentLevel++;
+                }
+                resetLevel();
             } else if (gameState === 'GAME_OVER' || gameState === 'ENDING') {
                 currentLevel = 1;
                 score = 0;
@@ -1090,7 +1096,6 @@
                 gameState = 'LEVEL_CLEAR';
                 storyTitle.textContent = `SECTOR ${currentLevel} CLEARED!`;
                 startBtn.textContent = "NEXT SECTOR";
-                currentLevel++;
                 storyOverlay.classList.remove('hidden');
             } else {
                 gameState = 'ENDING';
