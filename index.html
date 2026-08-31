@@ -103,7 +103,7 @@
         .overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(8, 9, 13, 0.35);
+            background: rgba(8, 9, 13, 0.2);
             backdrop-filter: blur(1px);
             color: #fff;
             display: flex;
@@ -115,65 +115,46 @@
             z-index: 10;
         }
 
-        .story-card {
-            background: rgba(15, 16, 21, 0.45);
-            border: 1px solid var(--accent-color);
-            border-radius: 12px;
-            padding: 10px;
-            box-shadow: 0 0 15px var(--accent-glow);
-            max-width: 95%;
-            width: 100%;
-        }
-
-        .story-card h2 {
-            margin: 0 0 6px 0;
-            font-size: 0.9rem;
+        .overlay h2 {
+            margin: 0 0 10px 45px;
+            font-size: 0.75rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             color: var(--accent-color);
             text-shadow: 0 0 8px var(--accent-glow);
+            animation: pulseText 1.5s infinite alternate ease-in-out;
         }
 
-        .ship-selector {
-            display: flex;
-            justify-content: space-around;
-            gap: 4px;
-            margin-bottom: 10px;
-        }
-
-        .ship-option {
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            padding: 6px 4px;
-            cursor: pointer;
-            width: 32%;
-            background: rgba(0, 0, 0, 0.4);
-            transition: all 0.2s;
-        }
-
-        .ship-option.selected {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 10px var(--accent-glow);
-            background: rgba(0, 255, 204, 0.2);
-        }
-
-        .ship-option h3 {
-            margin: 0;
-            font-size: 0.65rem;
-            color: var(--accent-color);
+        @keyframes pulseText {
+            0% {
+                transform: scale(0.98);
+                opacity: 0.85;
+                text-shadow: 0 0 4px var(--accent-glow);
+            }
+            100% {
+                transform: scale(1.05);
+                opacity: 1;
+                text-shadow: 0 0 14px var(--accent-glow);
+            }
         }
 
         .overlay button {
             background: var(--accent-color);
             color: #000;
             border: none;
-            padding: 8px 18px;
+            padding: 5px 12px;
+            margin-left: 45px;
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
-            font-size: 0.7rem;
-            border-radius: 20px;
+            font-size: 0.55rem;
+            border-radius: 16px;
             cursor: pointer;
-            box-shadow: 0 0 15px var(--accent-glow);
+            box-shadow: 0 0 10px var(--accent-glow);
+            transition: transform 0.1s;
+        }
+
+        .overlay button:active {
+            transform: scale(0.95);
         }
 
         .hidden { display: none !important; }
@@ -275,23 +256,8 @@
                 <canvas id="canvas" width="160" height="100"></canvas>
 
                 <div id="story-overlay" class="overlay">
-                    <div class="story-card">
-                        <h2 id="story-title">SUPERNOVA SEPARATION</h2>
-
-                        <div id="hangar-select" class="ship-selector">
-                            <div class="ship-option selected" onclick="selectShip('interceptor', event)">
-                                <h3>NOVA</h3>
-                            </div>
-                            <div class="ship-option" onclick="selectShip('titan', event)">
-                                <h3>TITAN</h3>
-                            </div>
-                            <div class="ship-option" onclick="selectShip('wraith', event)">
-                                <h3>WRAITH</h3>
-                            </div>
-                        </div>
-
-                        <button id="start-btn" onclick="dismissOverlay()">START MISSION</button>
-                    </div>
+                    <h2 id="story-title">SUPERNOVA SEPARATION</h2>
+                    <button id="start-btn" onclick="dismissOverlay()">START MISSION</button>
                 </div>
             </div>
         </div>
@@ -305,7 +271,7 @@
             </div>
             <div class="action-container">
                 <button class="ctrl-btn pause-btn" id="btn-pause" onclick="togglePause()">PAUSE</button>
-                <button class="ctrl-btn fire-btn" id="btn-fire" data-key="Fire">FIRE</button>
+                <button class="ctrl-btn fire-btn" id="btn-fire" data-key="Fire" onclick="handleFireClick()">FIRE</button>
             </div>
         </div>
     </div>
@@ -317,7 +283,6 @@
         const storyTitle = document.getElementById('story-title');
         const startBtn = document.getElementById('start-btn');
         const gameTitle = document.getElementById('game-title');
-        const hangarSelect = document.getElementById('hangar-select');
 
         const LOGICAL_W = 160;
         const LOGICAL_H = 100;
@@ -327,6 +292,12 @@
         let highScore = parseInt(localStorage.getItem('space_impact_hi') || '0', 10);
         let highScoreBroken = false;
         let newHighScoreBannerTimer = 0;
+
+        function vibrate(duration) {
+            if (navigator.vibrate) {
+                navigator.vibrate(duration);
+            }
+        }
 
         function initAudio() {
             if (!audioCtx) {
@@ -465,17 +436,30 @@
             }
         }
 
-        const sectorThemes = [
-            { name: "1. ASTEROID DRIFT", bg: "#0d1117", pixel: "#00ffcc", enemy: "#ff3366", targetScore: 300 },
-            { name: "2. NEBULA CAVERNS", bg: "#1a0933", pixel: "#e2b6ff", enemy: "#ff007f", targetScore: 650 },
-            { name: "3. ALIEN RUINS", bg: "#062c30", pixel: "#05d9e8", enemy: "#ff2a5f", targetScore: 1100 },
-            { name: "4. SOLAR FLARE BELT", bg: "#2b0000", pixel: "#ffb703", enemy: "#ff4d6d", targetScore: 1600 },
-            { name: "5. THE DARK SECTOR", bg: "#080e18", pixel: "#7000ff", enemy: "#00f5d4", targetScore: 2200 },
-            { name: "6. MOTHERSHIP PERIMETER", bg: "#0b2b1a", pixel: "#39ff14", enemy: "#ff0055", targetScore: 2900 },
-            { name: "7. QUANTUM VOID", bg: "#1f002b", pixel: "#ff00ea", enemy: "#00ffff", targetScore: 3700 },
-            { name: "8. CORE OVERLORD", bg: "#100000", pixel: "#ff0000", enemy: "#ffff00", targetScore: 4600 },
-            { name: "9. NEON CYBERGRID", bg: "#030212", pixel: "#ff0055", enemy: "#00e5ff", targetScore: 5600 }
+        const baseSectorThemes = [
+            { name: "ASTEROID DRIFT", bg: "#0d1117", pixel: "#00ffcc", enemy: "#ff3366" },
+            { name: "NEBULA CAVERNS", bg: "#1a0933", pixel: "#e2b6ff", enemy: "#ff007f" },
+            { name: "ALIEN RUINS", bg: "#062c30", pixel: "#05d9e8", enemy: "#ff2a5f" },
+            { name: "SOLAR FLARE BELT", bg: "#2b0000", pixel: "#ffb703", enemy: "#ff4d6d" },
+            { name: "THE DARK SECTOR", bg: "#080e18", pixel: "#7000ff", enemy: "#00f5d4" },
+            { name: "MOTHERSHIP PERIMETER", bg: "#0b2b1a", pixel: "#39ff14", enemy: "#ff0055" },
+            { name: "QUANTUM VOID", bg: "#1f002b", pixel: "#ff00ea", enemy: "#00ffff" },
+            { name: "CORE OVERLORD", bg: "#100000", pixel: "#ff0000", enemy: "#ffff00" },
+            { name: "NEON CYBERGRID", bg: "#030212", pixel: "#ff0055", enemy: "#00e5ff" }
         ];
+
+        function getSectorTheme(level) {
+            const index = (level - 1) % baseSectorThemes.length;
+            const loopCount = Math.floor((level - 1) / baseSectorThemes.length);
+            const base = baseSectorThemes[index];
+            return {
+                name: `${level}. ${base.name}${loopCount > 0 ? ' +' + loopCount : ''}`,
+                bg: base.bg,
+                pixel: base.pixel,
+                enemy: base.enemy,
+                targetScore: score + 300 + (level * 150)
+            };
+        }
 
         const shipTypes = {
             interceptor: { speed: 3.2, maxLives: 8, maxShields: 4, invinTime: 120, name: 'NOVA', spriteKey: 'nova' },
@@ -483,7 +467,7 @@
             wraith: { speed: 2.8, maxLives: 6, maxShields: 8, invinTime: 150, name: 'WRAITH', spriteKey: 'wraith' }
         };
 
-        let selectedShipType = 'interceptor';
+        let selectedShipType = 'wraith';
 
         const fontDigits = {
             '0': [[1,1,1],[1,0,1],[1,0,1],[1,0,1],[1,1,1]], '1': [[0,1,0],[1,1,0],[0,1,0],[0,1,0],[1,1,1]],
@@ -508,7 +492,7 @@
             titan: [
                 [1,1,1,1,0,0,0,0,0,0,0,0], [1,1,1,1,1,1,1,0,0,0,0,0], [1,1,1,1,1,1,1,1,1,0,0,0],
                 [1,1,0,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1,1,0], [1,1,0,1,1,1,1,1,1,1,1,1],
-                [1,1,1,1,1,1,1,1,1,0,0,0], [1,1,1,1,1,1,1,0,0,0,0,0], [1,1,1,1,0,0,0,0,0,0,0,0]
+                [1,1,1,1,0,0,0,0,0,0,0,0], [1,1,1,1,1,1,1,0,0,0,0,0], [1,1,1,1,0,0,0,0,0,0,0,0]
             ],
             wraith: [
                 [1,1,0,0,0,0,0,0,0,0,0,0], [0,1,1,1,0,0,0,0,0,0,0,0], [0,0,1,1,1,1,0,0,0,0,0,0],
@@ -519,10 +503,17 @@
             astronaut: [[0,1,1,1,1,0],[1,1,0,0,1,1],[0,1,1,1,1,0],[1,1,1,1,1,1],[1,0,1,1,0,1],[0,1,0,0,1,0]],
             jellyfish: [[0,1,1,1,1,0],[1,1,0,0,1,1],[1,1,1,1,1,1],[0,1,1,1,1,0],[1,0,1,0,1,0],[0,1,0,1,0,1]],
             plasmaBat: [[1,0,0,0,0,1],[1,1,1,1,1,1],[1,0,1,1,0,1],[0,1,1,1,1,0],[0,0,1,1,0,0],[0,1,0,0,1,0]],
+            cyberScout: [[1,1,0,0,1,1],[0,1,1,1,1,0],[1,1,0,0,1,1],[0,1,1,1,1,0],[1,0,0,0,0,1],[0,1,0,0,1,0]],
+            voidWalker: [[0,1,0,1,0],[1,1,1,1,1],[0,1,1,1,0],[1,0,1,0,1],[1,1,0,1,1],[0,1,0,1,0]],
             boss: [
                 [0,1,1,1,1,1,1,1,1,1,1,0], [1,1,1,0,0,0,0,0,0,1,1,1], [1,1,0,1,1,1,1,1,1,0,1,1],
                 [1,1,1,1,1,1,1,1,1,1,1,1], [1,0,1,0,1,1,1,1,0,1,0,1], [1,1,1,1,1,1,1,1,1,1,1,1],
                 [1,1,0,1,1,1,1,1,1,0,1,1], [1,1,1,0,0,0,0,0,0,1,1,1], [0,1,1,1,1,1,1,1,1,1,1,0]
+            ],
+            bossType2: [
+                [1,1,1,0,0,0,0,0,0,1,1,1], [0,1,1,1,1,1,1,1,1,1,1,0], [1,1,0,1,0,1,1,0,1,0,1,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1], [0,0,1,1,1,1,1,1,1,1,0,0], [1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,0,1,1,0,0,0,0,1,1,0,1], [0,1,0,1,1,1,1,1,1,0,1,0], [1,0,0,0,1,1,1,1,0,0,0,1]
             ],
             heart: [[0,1,0,1,0],[1,1,1,1,1],[1,1,1,1,1],[0,1,1,1,0],[0,0,1,0,0]],
             shield: [[0,1,1,1,0],[1,0,0,0,1],[1,0,1,0,1],[1,0,0,0,1],[0,1,1,1,0]],
@@ -561,7 +552,14 @@
         let weaponTimer = 0;
 
         let introTime = 0;
-        let spacemanPos = { x: -10, y: 50 };
+        let spacemanPos = { x: 25, y: 50 };
+        let introAliens = [
+            { x: 160, y: 35, speed: 0.6, type: 'alien' },
+            { x: 180, y: 65, speed: 0.7, type: 'jellyfish' }
+        ];
+        let introShots = [];
+        let introExplosions = [];
+
         let invincibilityTimer = 0;
         let fireCooldown = 0;
         let boss = null;
@@ -627,6 +625,12 @@
             updateTouchState();
         }, { passive: true });
 
+        function handleFireClick() {
+            if (gameState === 'LEVEL_CLEAR' || gameState === 'INTRO' || gameState === 'GAME_OVER' || gameState === 'ENDING') {
+                dismissOverlay();
+            }
+        }
+
         function createExplosion(x, y, particleCount = 28, isLarge = false) {
             const colors = ['#ff3300', '#ff9900', '#ffff00', '#ffffff', '#00ffcc'];
             for (let i = 0; i < particleCount; i++) {
@@ -649,14 +653,6 @@
                 highScoreBroken = true;
                 newHighScoreBannerTimer = 90;
                 playSound('powerup');
-            }
-        }
-
-        function selectShip(type, evt) {
-            selectedShipType = type;
-            document.querySelectorAll('.ship-option').forEach(el => el.classList.remove('selected'));
-            if (evt && evt.currentTarget) {
-                evt.currentTarget.classList.add('selected');
             }
         }
 
@@ -694,7 +690,7 @@
         }
 
         function updateThemeStyles() {
-            const theme = sectorThemes[currentLevel - 1];
+            const theme = getSectorTheme(currentLevel);
             document.documentElement.style.setProperty('--accent-color', theme.pixel);
             document.documentElement.style.setProperty('--accent-glow', `${theme.pixel}66`);
             gameTitle.style.color = theme.pixel;
@@ -709,9 +705,7 @@
             } else if (gameState === 'LEVEL_CLEAR') {
                 gameState = 'PLAYING';
                 storyOverlay.classList.add('hidden');
-                if (currentLevel < sectorThemes.length) {
-                    currentLevel++;
-                }
+                currentLevel++;
                 resetLevel();
             } else if (gameState === 'GAME_OVER' || gameState === 'ENDING') {
                 currentLevel = 1;
@@ -731,7 +725,6 @@
             maxShields = ship.maxShields;
             shields = maxShields;
             highScoreBroken = false;
-            hangarSelect.classList.add('hidden');
             resetLevel();
         }
 
@@ -760,7 +753,8 @@
             inBossFight = true;
             enemyBullets = [];
             const bossHp = 30 + (currentLevel * 12);
-            boss = { x: LOGICAL_W - 25, y: 35, hp: bossHp, maxHp: bossHp, dir: 1 };
+            const spriteKey = (currentLevel % 2 === 0) ? 'bossType2' : 'boss';
+            boss = { x: LOGICAL_W - 25, y: 35, hp: bossHp, maxHp: bossHp, dir: 1, spriteKey: spriteKey };
         }
 
         function addFloatingPoints(val, x, y) {
@@ -768,7 +762,7 @@
         }
 
         function drawPixelGrid(matrix, startX, startY, pixelScale = 1, customColor = null) {
-            const theme = sectorThemes[currentLevel - 1];
+            const theme = getSectorTheme(currentLevel);
             ctx.fillStyle = customColor || theme.pixel;
             for (let r = 0; r < matrix.length; r++) {
                 for (let c = 0; c < matrix[r].length; c++) {
@@ -805,7 +799,7 @@
         }
 
         function drawSkyline() {
-            const theme = sectorThemes[currentLevel - 1];
+            const theme = getSectorTheme(currentLevel);
             cityScrollX = (cityScrollX + 0.3) % totalCityWidth;
 
             let curX = -cityScrollX;
@@ -843,7 +837,7 @@
         }
 
         function drawHUD() {
-            const theme = sectorThemes[currentLevel - 1];
+            const theme = getSectorTheme(currentLevel);
             for (let i = 0; i < maxLives; i++) {
                 if (i < lives) drawPixelGrid(sprites.heart, 2 + (i * 6), 2);
                 else {
@@ -880,6 +874,7 @@
             introTime += 0.05;
             ctx.fillStyle = "#070b14";
             ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+
             ctx.fillStyle = "#ffffff";
             for (let i = 0; i < 40; i++) {
                 const sx = (i * 17 + Math.sin(introTime + i) * 5) % LOGICAL_W;
@@ -887,18 +882,60 @@
                 if (Math.sin(introTime * 2 + i) > 0) ctx.fillRect(sx, sy, 1, 1);
             }
 
-            const novaRadius = 18 + Math.sin(introTime * 2.5) * 5;
-            ctx.fillStyle = "rgba(255, 50, 100, 0.4)";
-            ctx.beginPath(); ctx.arc(20, 50, novaRadius + 15, 0, Math.PI * 2); ctx.fill();
+            const novaRadius = 14 + Math.sin(introTime * 2.5) * 4;
+            ctx.fillStyle = "rgba(255, 50, 100, 0.35)";
+            ctx.beginPath(); ctx.arc(18, 50, novaRadius + 12, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = "#ff7700";
-            ctx.beginPath(); ctx.arc(20, 50, novaRadius + 6, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(18, 50, novaRadius + 5, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = "#ffffff";
-            ctx.beginPath(); ctx.arc(20, 50, novaRadius, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(18, 50, novaRadius, 0, Math.PI * 2); ctx.fill();
 
-            spacemanPos.x += 0.35;
-            spacemanPos.y = 45 + Math.sin(introTime) * 8;
-            if (spacemanPos.x > LOGICAL_W + 10) spacemanPos.x = -15;
+            spacemanPos.y = 48 + Math.sin(introTime * 1.5) * 6;
             drawPixelGrid(sprites.astronaut, spacemanPos.x, spacemanPos.y, 1, "#00ffcc");
+
+            if (Math.random() < 0.1) {
+                introShots.push({ x: spacemanPos.x + 6, y: spacemanPos.y + 3, vx: 2.5, vy: (Math.random() - 0.5) * 0.5 });
+            }
+
+            for (let i = introShots.length - 1; i >= 0; i--) {
+                let shot = introShots[i];
+                shot.x += shot.vx;
+                shot.y += shot.vy;
+                ctx.fillStyle = "#00ffcc";
+                ctx.fillRect(Math.floor(shot.x), Math.floor(shot.y), 2, 1);
+
+                introAliens.forEach(a => {
+                    if (Math.abs(shot.x - a.x) < 5 && Math.abs(shot.y - a.y) < 5) {
+                        for (let k = 0; k < 6; k++) {
+                            introExplosions.push({
+                                x: a.x + 3, y: a.y + 3,
+                                vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2,
+                                life: 10, color: '#ff3366'
+                            });
+                        }
+                        a.x = LOGICAL_W + Math.random() * 40;
+                        a.y = 20 + Math.random() * 60;
+                        introShots.splice(i, 1);
+                    }
+                });
+
+                if (shot.x > LOGICAL_W) introShots.splice(i, 1);
+            }
+
+            introAliens.forEach(a => {
+                a.x -= a.speed;
+                if (a.x < 50) a.x = LOGICAL_W + Math.random() * 30;
+                const alienSprite = sprites[a.type] || sprites.alien;
+                drawPixelGrid(alienSprite, a.x, a.y, 1, "#ff3366");
+            });
+
+            for (let i = introExplosions.length - 1; i >= 0; i--) {
+                let p = introExplosions[i];
+                p.x += p.vx; p.y += p.vy; p.life--;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(Math.floor(p.x), Math.floor(p.y), 1, 1);
+                if (p.life <= 0) introExplosions.splice(i, 1);
+            }
         }
 
         function spawnBoosterItems() {
@@ -914,12 +951,12 @@
         function spawnEnemies() {
             if (inBossFight) return;
 
-            const currentTarget = sectorThemes[currentLevel - 1].targetScore;
-            if (score >= currentTarget) { spawnBoss(); return; }
+            const theme = getSectorTheme(currentLevel);
+            if (score >= theme.targetScore) { spawnBoss(); return; }
 
             waveTimer++;
             if (waveTimer % 25 === 0) {
-                const availableEnemyTypes = ['alien', 'jellyfish', 'plasmaBat'];
+                const availableEnemyTypes = ['alien', 'jellyfish', 'plasmaBat', 'cyberScout', 'voidWalker'];
                 const selectedType = availableEnemyTypes[Math.floor(Math.random() * availableEnemyTypes.length)];
                 const formationType = Math.random();
 
@@ -1046,6 +1083,7 @@
                             addFloatingPoints(200, boss.x, boss.y);
                             createExplosion(boss.x + 6, boss.y + 4, 48, true);
                             playSound('destroy');
+                            vibrate(100);
                             boss = null;
                             inBossFight = false;
                             completeLevel();
@@ -1073,6 +1111,7 @@
                             addFloatingPoints(pts, e.x, e.y);
                             createExplosion(e.x + 3, e.y + 3, 28);
                             playSound('destroy');
+                            vibrate(40);
                             enemies.splice(ei, 1);
                         }
                     }
@@ -1094,18 +1133,10 @@
                 localStorage.setItem('space_impact_hi', highScore);
             }
 
-            if (currentLevel < sectorThemes.length) {
-                gameState = 'LEVEL_CLEAR';
-                storyTitle.textContent = `SECTOR ${currentLevel} CLEARED!`;
-                startBtn.textContent = "NEXT SECTOR";
-                storyOverlay.classList.remove('hidden');
-            } else {
-                gameState = 'ENDING';
-                storyTitle.textContent = "NEON OVERLORD DESTROYED!";
-                startBtn.textContent = "PLAY AGAIN";
-                hangarSelect.classList.remove('hidden');
-                storyOverlay.classList.remove('hidden');
-            }
+            gameState = 'LEVEL_CLEAR';
+            storyTitle.textContent = `SECTOR ${currentLevel} CLEARED!`;
+            startBtn.textContent = "NEXT SECTOR";
+            storyOverlay.classList.remove('hidden');
         }
 
         function handlePlayerHit() {
@@ -1117,12 +1148,14 @@
                 shields--;
                 invincibilityTimer = shipTypes[selectedShipType].invinTime;
                 playSound('shield_hit');
+                vibrate(60);
                 return;
             }
 
             lives--;
             invincibilityTimer = shipTypes[selectedShipType].invinTime;
             playSound('hit');
+            vibrate(150);
 
             if (lives <= 0) {
                 if (score > highScore) {
@@ -1132,7 +1165,6 @@
                 gameState = 'GAME_OVER';
                 storyTitle.textContent = "MISSION FAILED";
                 startBtn.textContent = "TRY AGAIN";
-                hangarSelect.classList.remove('hidden');
                 storyOverlay.classList.remove('hidden');
             }
         }
@@ -1141,7 +1173,7 @@
             ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
             if (gameState === 'INTRO') { renderIntroCinematic(); return; }
 
-            const theme = sectorThemes[currentLevel - 1];
+            const theme = getSectorTheme(currentLevel);
             ctx.fillStyle = theme.bg;
             ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
 
@@ -1180,7 +1212,8 @@
             });
 
             if (inBossFight && boss) {
-                drawPixelGrid(sprites.boss, boss.x, boss.y, 1, theme.enemy);
+                const bossSprite = sprites[boss.spriteKey] || sprites.boss;
+                drawPixelGrid(bossSprite, boss.x, boss.y, 1, theme.enemy);
             }
 
             explosions.forEach(p => {
